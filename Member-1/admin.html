@@ -1,49 +1,240 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Admin Dashboard | LostLink</title><link rel="stylesheet" href="css/admin.css"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | LostLink</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
 <body>
-<header class="header"><a class="logo" href="index.html">Lost<span>Link</span></a><div class="user-info"><span class="badge admin">Admin</span><span>Welcome, Admin</span><a class="btn btn-light btn-small" href="../login.html" onclick="logout()">Logout</a></div></header>
-<nav class="topnav">
-<button id="nav-usersSection" onclick="showSection('usersSection')">Manage Users</button>
-<button id="nav-reportSection" onclick="showSection('reportSection')">System Report</button>
-<button id="nav-approvalSection" onclick="showSection('approvalSection')">Account Approvals</button>
-<button id="nav-moderationSection" onclick="showSection('moderationSection')">Item Moderation</button>
-</nav>
+
+<header class="header">
+    <a class="logo" href="index.html">Lost<span>Link</span></a>
+
+    <div class="user-info">
+        <span class="badge admin">Admin</span>
+        <span>Welcome, Admin</span>
+        <a class="btn btn-light btn-small" href="../login.html" onclick="logout()">Logout</a>
+    </div>
+</header>
+
 <main class="container">
-<section id="usersSection" class="page-section">
-<h1 class="page-title">Manage Users</h1><p class="page-subtitle">Create, view, update, delete and search user accounts.</p>
-<div class="card">
-<form class="form inline-form" onsubmit="return saveUser()">
-<input type="hidden" id="userIndex" value="-1">
-<label>Full Name<input id="userName" required></label><label>Username<input id="userUsername" required></label>
-<label>Role<select id="userRole"><option>Student</option><option>University Staff</option><option>Security Officer</option></select></label>
-<label>Status<select id="userStatus"><option>Active</option><option>Pending</option><option>Blocked</option></select></label>
-<button class="btn" type="submit">Save User</button>
-</form><p id="userMessage" class="message"></p>
-</div>
-<div class="card"><label>Search Users<input id="userSearch" onkeyup="renderUsers()" placeholder="Search by name, username or role"></label>
-<table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody id="usersTable"></tbody></table></div>
-</section>
-<section id="reportSection" class="page-section" style="display:none">
-<h1 class="page-title">System Report</h1><p class="page-subtitle">A quick summary of LostLink activity.</p>
-<div class="grid four">
-<div class="card stat"><span>Total Users</span><strong id="totalUsers">0</strong></div>
-<div class="card stat"><span>Lost Reports</span><strong id="totalLost">0</strong></div>
-<div class="card stat"><span>Found Items</span><strong id="totalFound">0</strong></div>
-<div class="card stat"><span>Returned Items</span><strong id="totalReturned">0</strong></div>
-</div>
-</section>
-<section id="approvalSection" class="page-section" style="display:none">
-<h1 class="page-title">Account Approvals</h1><p class="page-subtitle">Review new account requests before allowing access.</p>
-<div class="feature-banner amber-banner"><div><span class="feature-icon">👤</span><h3>Account Review Center</h3><p>Approve valid student and staff account requests.</p></div><strong id="pendingAccountCount">0 Pending</strong></div>
-<div class="card"><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="approvalTable"></tbody></table></div>
-</section>
-<section id="moderationSection" class="page-section" style="display:none">
-<h1 class="page-title">Item Moderation</h1><p class="page-subtitle">Review item reports that need admin attention.</p>
-<div class="feature-banner sage-banner"><div><span class="feature-icon">🛡️</span><h3>Report Review</h3><p>Remove incomplete or inappropriate reports from the review list.</p></div><strong>Admin Only</strong></div>
-<div class="card"><label>Search Reports<input id="moderationSearch" onkeyup="renderModeration()" placeholder="Search item or reporter"></label>
-<table><thead><tr><th>Item</th><th>Category</th><th>Reporter</th><th>Reason</th><th>Action</th></tr></thead><tbody id="moderationTable"></tbody></table></div>
-</section>
+
+    <div class="dashboard-heading">
+        <div>
+            <span class="eyebrow">ADMIN PANEL</span>
+            <h1>Admin Dashboard</h1>
+            <p>Manage users, monitor activities and control the LostLink system.</p>
+        </div>
+        <span class="admin-icon">🛡️</span>
+    </div>
+
+    <!-- 1. Manage Users -->
+    <section id="usersSection" class="page-section">
+        <div class="section-heading">
+            <span class="section-number">01</span>
+            <div>
+                <h2>Manage Users</h2>
+                <p>Create, view, update, delete and search user accounts.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Add or Update User</h3>
+
+            <form class="form inline-form" onsubmit="return saveUser()">
+                <input type="hidden" id="userIndex" value="-1">
+
+                <label>Full Name
+                    <input id="userName" placeholder="Enter full name" required>
+                </label>
+
+                <label>Username
+                    <input id="userUsername" placeholder="Enter username" required>
+                </label>
+
+                <label>Role
+                    <select id="userRole">
+                        <option>Student</option>
+                        <option>University Staff</option>
+                        <option>Security Officer</option>
+                    </select>
+                </label>
+
+                <label>Status
+                    <select id="userStatus">
+                        <option>Active</option>
+                        <option>Pending</option>
+                        <option>Blocked</option>
+                    </select>
+                </label>
+
+                <button class="btn" type="submit">Save User</button>
+            </form>
+
+            <p id="userMessage" class="message"></p>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">User List</h3>
+
+            <label class="search-label">Search Users
+                <input id="userSearch" onkeyup="renderUsers()"
+                       placeholder="Search by name, username or role">
+            </label>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. System Report -->
+    <section id="reportSection" class="page-section">
+        <div class="section-heading">
+            <span class="section-number">02</span>
+            <div>
+                <h2>System Report</h2>
+                <p>A quick summary of LostLink activities.</p>
+            </div>
+        </div>
+
+        <div class="grid four">
+            <div class="card stat">
+                <span>Total Users</span>
+                <strong id="totalUsers">0</strong>
+                <small>Registered accounts</small>
+            </div>
+
+            <div class="card stat">
+                <span>Lost Reports</span>
+                <strong id="totalLost">0</strong>
+                <small>Reported lost items</small>
+            </div>
+
+            <div class="card stat">
+                <span>Found Items</span>
+                <strong id="totalFound">0</strong>
+                <small>Reported found items</small>
+            </div>
+
+            <div class="card stat">
+                <span>Returned Items</span>
+                <strong id="totalReturned">0</strong>
+                <small>Successfully returned</small>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Account Approvals -->
+    <section id="approvalSection" class="page-section">
+        <div class="section-heading">
+            <span class="section-number">03</span>
+            <div>
+                <h2>Account Approvals</h2>
+                <p>Review new account requests before allowing access.</p>
+            </div>
+        </div>
+
+        <div class="feature-banner amber-banner">
+            <div>
+                <span class="feature-icon">👤</span>
+                <h3>Account Review Center</h3>
+                <p>Approve valid student and staff account requests.</p>
+            </div>
+
+            <strong id="pendingAccountCount">0 Pending</strong>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Pending Account Requests</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approvalTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Item Moderation -->
+    <section id="moderationSection" class="page-section">
+        <div class="section-heading">
+            <span class="section-number">04</span>
+            <div>
+                <h2>Item Moderation</h2>
+                <p>Review item reports that need admin attention.</p>
+            </div>
+        </div>
+
+        <div class="feature-banner sage-banner">
+            <div>
+                <span class="feature-icon">🛡️</span>
+                <h3>Report Review Center</h3>
+                <p>Remove incomplete or inappropriate reports.</p>
+            </div>
+
+            <strong>Admin Only</strong>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Reported Items</h3>
+
+            <label class="search-label">Search Reports
+                <input id="moderationSearch" onkeyup="renderModeration()"
+                       placeholder="Search item or reporter">
+            </label>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Category</th>
+                            <th>Reporter</th>
+                            <th>Reason</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="moderationTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
 </main>
-<script src="../../shared/js/data.js"></script><script src="../../shared/js/common.js"></script><script src="../../shared/js/auth.js"></script><script>requireRole("Admin");</script><script src="js/admin.js"></script>
-</body></html>
+
+<footer class="footer">
+    <span>LostLink Admin Dashboard</span>
+    <span>University Lost & Found Management System</span>
+</footer>
+
+<script src="../../shared/js/data.js"></script>
+<script src="../../shared/js/common.js"></script>
+<script src="../../shared/js/auth.js"></script>
+<script>requireRole("Admin");</script>
+<script src="js/admin.js"></script>
+
+</body>
+</html>
